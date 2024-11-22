@@ -1,0 +1,51 @@
+/* Osnovni stilovi za stranicu Moji Podkasti */
+.my-podcasts-page {
+    font-family: 'Arial', sans-serif;
+    background-color: #1e1e2e;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Glavni sadržaj */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  /* Kartice za podkaste */
+  .podcast-card {
+    display: flex;
+    background-color: #29293d;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    gap: 20px;
+  }
+  
+  .podcast-thumbnail {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    object-fit: cover;
+    
+  }
+  
+  .podcast-details {
+    flex: 1;
+  }
+  
+  .podcast-details h3 {
+    margin: 0 0 10px;
+    color: #ff5722; /* Akcent boja */
+  }
+  
+  .podcast-details p {
+    margin: 0;
+    color: #d1d1e0;
+  }
+  

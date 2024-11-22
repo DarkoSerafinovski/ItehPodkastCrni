@@ -1,0 +1,47 @@
+.edit-podcast-page {
+    padding: 20px;
+  }
+  
+  .edit-podcast-form {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: bold;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    margin-top: 5px;
+  }
+  
+  textarea {
+    height: 150px;
+  }
+  
+  .edit-podcast-btn {
+    background-color: #ffc107;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .edit-podcast-btn:hover {
+    background-color: #e0a800;
+  }
+  

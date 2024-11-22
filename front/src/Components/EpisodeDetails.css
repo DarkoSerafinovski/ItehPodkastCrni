@@ -1,0 +1,104 @@
+/* EpisodeDetails.css */
+
+/* Glavni container za stranicu detalja epizode */
+.episode-details-page {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Header sa thumbnail-om i informacijama o epizodi */
+  .episode-details-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .episode-details-thumbnail {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+  }
+  
+  .episode-details-info {
+    flex-grow: 1;
+  }
+  
+  .episode-details-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .episode-details-description {
+    font-size: 1.1rem;
+    color: #555;
+  }
+  
+  /* Detalji epizode (tekst, audio/video player, i ostalo) */
+  .episode-content {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .episode-content h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .episode-player {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .episode-player audio,
+  .episode-player video {
+    width: 80%;
+    border-radius: 8px;
+  }
+  
+  /* Dugmadi za akcije (slušanje, deljenje) */
+  .episode-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .episode-actions button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .episode-actions button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Stanje kada se epizoda učita, prikazivanje loading indikatora */
+  .episode-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+  }
+  
+  .episode-loading span {
+    font-size: 1.5rem;
+    color: #555;
+  }
+  

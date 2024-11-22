@@ -1,0 +1,146 @@
+/* Global Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #121212; /* Deep dark background */
+    color: #ffffff; /* White text for contrast */
+}
+
+/* Full Page Container */
+.register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(145deg, #0f0f0f, #1c1c1c); /* Dark gradient background */
+}
+
+/* Register Form Container */
+.register-container {
+    background: linear-gradient(145deg, #222222, #2a2a2a); /* Subtle gradient */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7); /* Deep shadow for elevation */
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Logo */
+.logo h1 {
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.8); /* Slightly transparent white */
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Form Styles */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.register-input {
+    background-color: #1e1e1e; /* Dark input field */
+    border: 1px solid #333333; /* Minimal border for structure */
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    color: #ffffff; /* White text for inputs */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4); /* Subtle 3D effect */
+    transition: all 0.3s ease;
+}
+
+.register-input:focus {
+    outline: none;
+    border-color: #007bff; /* Accent border on focus */
+    background-color: #292929; /* Slightly lighter on focus */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6); /* Glow effect on focus */
+}
+
+/* Register Button */
+.register-button {
+    background-color: #ff5722; /* Vibrant orange accent */
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+    background-color: #e64a19; /* Slightly darker orange on hover */
+}
+
+/* Login Link */
+.login-link {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7); /* Subtle text */
+}
+
+.login-link a {
+    color: #ff5722; /* Consistent accent color */
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+    color: #e64a19; /* Darker orange on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .register-container {
+        padding: 20px;
+        width: 90%;
+    }
+
+    .logo h1 {
+        font-size: 1.8rem;
+    }
+
+    .register-input {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+
+    .register-button {
+        font-size: 1rem;
+        padding: 12px;
+    }
+
+    .login-link {
+        font-size: 0.8rem;
+    }
+}
+/* Dropdown Styles */
+.register-select {
+    background-color: #1e1e1e; /* Tamna pozadina za konzistentnost */
+    border: 1px solid #333333; /* Minimalna ivica */
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    color: #ffffff; /* Bela boja za tekst */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4); /* Blagi 3D efekat */
+    appearance: none; /* Sakriva strelicu za default stilove */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.register-select:focus {
+    outline: none;
+    border-color: #007bff; /* Akcentovana boja */
+    background-color: #292929; /* Svetlija pozadina na fokus */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6); /* Glow efekat */
+}
+
+.register-select option {
+    background-color: #1e1e1e; /* Pozadina za opcije */
+    color: #ffffff; /* Bela boja za tekst */
+}

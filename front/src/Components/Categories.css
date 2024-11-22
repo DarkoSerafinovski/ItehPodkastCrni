@@ -1,0 +1,71 @@
+/* Osnovni stilovi za stranicu Kategorije */
+.categories-page {
+    font-family: 'Arial', sans-serif;
+    background-color: #1e1e2e;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .categories-container {
+    margin: 40px auto;
+    padding: 20px;
+    width: 500px;
+    background-color: #29293d;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .categories-container h2 {
+    text-align: center;
+    color: #ff5722;
+    margin-bottom: 20px;
+  }
+  
+  .categories-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .category-item {
+    padding: 10px 15px;
+    margin: 5px 0;
+    background-color: #333;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 16px;
+  }
+  
+  .add-category {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .add-category-input {
+    padding: 10px;
+    width: 80%;
+    margin-bottom: 10px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #1e1e2e;
+    color: #ffffff;
+  }
+  
+  .add-category-button {
+    padding: 10px 20px;
+    background-color: #ff5722;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-category-button:hover {
+    background-color: #e64a19;
+  }
+  
