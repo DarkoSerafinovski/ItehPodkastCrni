@@ -77,19 +77,8 @@ class PodcastController extends Controller
             $podcast = Podcast::findOrFail($id);
             $user = Auth::user();
     
-            
-          //provera da li sme da radi treba da se doda
-           
-            
-    
-            
-           
             if ($podcast->logo_putanja) {
                 $putanjaBanera = public_path($podcast->logo_putanja);
-                $putanjaBanera = str_replace('/', '\\', $putanjaBanera); 
-              
-    
-               
                 $direktorijum = dirname($putanjaBanera);
                 if (File::exists($direktorijum)) {
                     File::deleteDirectory($direktorijum);
@@ -164,11 +153,10 @@ private function uploadLogo($file, $naslov)
         Storage::makeDirectory($path);
     }
 
-    // Čuvanje fajla na specifičnoj putanji
     $pathFile = $file->storeAs($path, $filename);
 
-    // Vraćanje putanje do logotipa
-    return str_replace('public/', 'storage/', $pathFile);
+    
+    return Storage::url($pathFile);
 }
 
 

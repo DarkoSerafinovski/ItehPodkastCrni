@@ -17,19 +17,12 @@ class EmisijaController extends Controller
     public function vratiFile($id)
     {
         try {
-            // Pronađi materijal
+           
             $emisija = Emisija::findOrFail($id);
-    
-            // Proveri da li je materijal video fajl
-            
-    
-            // Priprema putanje fajla
             $relativePath = $emisija->file;
-            $absolutePath = public_path($relativePath); // Konvertuje u apsolutnu putanju
-            $absolutePath = str_replace('/', '\\', $absolutePath);
-            Log::info("Pokušavam da učitam fajl sa putanje: $absolutePath");
+            $absolutePath = public_path($relativePath); 
+
     
-            // Proveri da li fajl postoji
             if (!File::exists($absolutePath)) {
                 return response()->json(['error' => 'Fajl ne postoji'], 404);
             }
@@ -43,8 +36,8 @@ class EmisijaController extends Controller
                 'Content-Length' => filesize($absolutePath),
             ]);
         } catch (\Exception $e) {
-            Log::error('Greška prilikom učitavanja videa: ' . $e->getMessage());
-            return response()->json(['error' => 'Došlo je do greške prilikom učitavanja videa.'], 500);
+            Log::error('Greška prilikom učitavanja file: ' . $e->getMessage());
+            return response()->json(['error' => 'Došlo je do greške prilikom učitavanja file.'], 500);
         }
     }
 
@@ -108,7 +101,7 @@ class EmisijaController extends Controller
         
         $pathFile = $file->storeAs($path, $filename);
 
-        return str_replace('public/', 'storage/', $pathFile); 
+        return Storage::url($pathFile); 
     }
     
 
