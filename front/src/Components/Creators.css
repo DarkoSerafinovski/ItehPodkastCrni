@@ -108,3 +108,79 @@
     background-color: #555;
   }
   
+
+/* Lista korisnika */
+.korisnici-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #444; /* Tamniji okvir */
+  border-radius: 5px;
+  background-color: #29293d; /* Tamna pozadina */
+}
+
+/* Dugme za korisnike */
+.korisnik-dugme {
+  background-color: #ff5722; /* Kontrastna narandžasta boja */
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+.korisnik-dugme:hover {
+  background-color: #e64a19; /* Tamnija narandžasta na hover */
+}
+
+/* Odabrani kreatori */
+.odabrani-kreatori {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  background-color: #29293d; /* Tamna pozadina */
+}
+
+.odabrani-kreatori h4 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #ff5722; /* Narandžasta boja za naslov */
+}
+
+.odabrani-kreatori ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.odabrani-kreatori li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  background-color: #333; /* Tamnija pozadina za stavke */
+  border: 1px solid #444;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.odabrani-kreatori li button {
+  background-color: #dc3545; /* Crvena boja za dugme za brisanje */
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.odabrani-kreatori li button:hover {
+  background-color: #a71d2a; /* Tamnija crvena na hover */
+}

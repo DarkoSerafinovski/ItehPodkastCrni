@@ -1,27 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Navigation from './Navigation';
 import './Creators.css';
 
 const Creators = () => {
-  // Hardkodirani podaci o kreatorima i broju podkasta
-  const [creators, setCreators] = useState([
-    { id: 1, username: 'Marko', podcasts: 5 },
-    { id: 2, username: 'Jovana', podcasts: 3 },
-    { id: 3, username: 'Nemanja', podcasts: 8 },
-    { id: 4, username: 'Ana', podcasts: 2 },
-  ]);
-
+  const [creators, setCreators] = useState([]);
   const [selectedCreator, setSelectedCreator] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [role,setRole]=useState('administrator')
+
+  // Dohvatanje kreatora sa servera
+  const fetchCreators = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:8000/api/users/autori', {
+        headers: {
+          Authorization: "Bearer " + window.sessionStorage.getItem('auth_token'),
+        },
+      });
+      setCreators(response.data.data);
+    } catch (error) {
+      console.error('Došlo je do greške prilikom dohvata kreatora:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Brisanje kreatora sa servera
+  const deleteCreator = async (creatorId) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/users/${creatorId}`, {
+        headers: {
+          Authorization: "Bearer " + window.sessionStorage.getItem('auth_token'),
+        },
+      });
+      setCreators((prev) => prev.filter((creator) => creator.id !== creatorId));
+    } catch (error) {
+      console.error('Došlo je do greške prilikom brisanja kreatora:', error);
+    }
+  };
+
+  // Pozivanje fetch funkcije prilikom učitavanja komponente
+  useEffect(() => {
+    fetchCreators();
+  }, []);
 
   const handleRemoveClick = (creator) => {
     setSelectedCreator(creator);
   };
 
   const confirmRemove = () => {
-    setCreators((prev) =>
-      prev.filter((creator) => creator.id !== selectedCreator.id)
-    );
-    setSelectedCreator(null);
+    if (selectedCreator) {
+      deleteCreator(selectedCreator.id);
+      setSelectedCreator(null);
+    }
   };
 
   const cancelRemove = () => {
@@ -31,36 +63,41 @@ const Creators = () => {
   return (
     <div className="creators-page">
       {/* Navigacija */}
-      <Navigation role="admin" />
+      <Navigation role={role} />
 
       {/* Glavni sadržaj */}
       <div className="creators-container">
-        <h2>Kreatori</h2>
-        <table className="creators-table">
-          <thead>
-            <tr>
-              <th>Korisničko ime</th>
-              <th>Broj podkasta</th>
-              <th>Akcije</th>
-            </tr>
-          </thead>
-          <tbody>
-            {creators.map((creator) => (
-              <tr key={creator.id}>
-                <td>{creator.username}</td>
-                <td>{creator.podcasts}</td>
-                <td>
-                  <button
-                    className="remove-button"
-                    onClick={() => handleRemoveClick(creator)}
-                  >
-                    Ukloni Kreatora
-                  </button>
-                </td>
+        <h2>Autori</h2>
+
+        {loading ? (
+          <p>Učitavanje...</p>
+        ) : (
+          <table className="creators-table">
+            <thead>
+              <tr>
+                <th>Korisničko ime</th>
+                <th>Broj podkasta</th>
+                <th>Akcije</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {creators.map((creator) => (
+                <tr key={creator.id}>
+                  <td>{creator.korisnicko_ime}</td>
+                  <td>{creator.broj_podkasta}</td>
+                  <td>
+                    <button
+                      className="remove-button"
+                      onClick={() => handleRemoveClick(creator)}
+                    >
+                      Ukloni Kreatora
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Modal za potvrdu uklanjanja */}

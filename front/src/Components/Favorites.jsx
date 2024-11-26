@@ -1,41 +1,73 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navigation from './Navigation'; // Pretpostavljamo da je već urađena
 import './Favorites.css';
-
+import { Link } from "react-router-dom";
+import axios from 'axios';
 const Favorites = () => {
-  // Hardkodirani podaci za sada
-  const omiljeniPodkasti = [
-    {
-      id: 1,
-      thumbnail: 'https://via.placeholder.com/150',
-      naziv: 'Deep Dive into AI',
-      opis: 'Razgovori o veštačkoj inteligenciji i njenom uticaju na svet.'
-    },
-    {
-      id: 2,
-      thumbnail: 'https://via.placeholder.com/150',
-      naziv: 'Mystery Chronicles',
-      opis: 'Najmisteriozniji događaji iz istorije i savremenog doba.'
-    },
-    {
-      id: 3,
-      thumbnail: 'https://via.placeholder.com/150',
-      naziv: 'Fitness for Life',
-      opis: 'Inspiracija i saveti za zdraviji životni stil.'
-    },
-  ];
+  const [podkasti, setPodkasti] = useState([]);
+  const [kreatori, setKreatori] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [selectedKreator, setSelectedKreator] = useState(null); 
+  const [role, setRole]=useState(window.sessionStorage.getItem('role') || null);
 
-  const kreatori = [
-    { id: 1, ime: 'Stefan Marković' },
-    { id: 2, ime: 'Jelena Kostić' },
-    { id: 3, ime: 'Nikola Đorđević' },
-    { id: 4, ime: 'Milica Ristić' },
-  ];
+
+  const fetchPodkasti = async (page = 1, kreatorId = null) => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/users/favorites/podcasti', {
+        params: {
+          page,
+          per_page: 10,
+          id_autora: kreatorId, 
+        },
+        headers: {
+          'Authorization': "Bearer " + window.sessionStorage.getItem('auth_token'),
+        },
+      });
+
+      
+      setPodkasti(response.data.data);
+      setTotalPages(response.data.meta.last_page);
+    } catch (error) {
+      console.error("Došlo je do greške prilikom dohvata podataka:", error);
+    }
+  };
+
+  // Dohvati kreatore
+  const fetchKreatori = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/users/autori/favorites', {
+        headers: {
+          'Authorization': "Bearer " + window.sessionStorage.getItem('auth_token'),
+        },
+      });
+      setKreatori(response.data.data);
+    } catch (error) {
+      console.error("Došlo je do greške prilikom dohvata kreatora:", error);
+    }
+  };
+
+  // useEffect za inicijalni dohvat podataka
+  useEffect(() => {
+    fetchPodkasti(currentPage, selectedKreator);
+  }, [currentPage, selectedKreator]);
+
+  useEffect(() => {
+    fetchKreatori();
+  }, []);
+
+  // Funkcija za rukovanje klikom na kreatora
+  const handleKreatorClick = (kreatorId) => {
+    setSelectedKreator(kreatorId); // Postavi izabranog kreatora
+    setCurrentPage(1); // Vrati na prvu stranicu
+  };
+
+
 
   return (
     <div className="favorites-page">
       {/* Navigacija */}
-      <Navigation role="viewer" />
+      <Navigation role={role}/>
 
       <div className="content">
         {/* Sidebar */}
@@ -43,26 +75,50 @@ const Favorites = () => {
           <h2>Kreatori</h2>
           <ul>
             {kreatori.map((kreator) => (
-              <li key={kreator.id}>{kreator.ime}</li>
+              <li
+                key={kreator.id}
+                className={`kreator-item ${selectedKreator === kreator.id ? 'active' : ''}`}
+                onClick={() => handleKreatorClick(kreator.id)} // Poziv funkcije na klik
+              >
+                {kreator.korisnicko_ime}
+              </li>
             ))}
           </ul>
         </aside>
 
         {/* Glavni sadržaj */}
         <main className="main-content">
-          {omiljeniPodkasti.map((podkast) => (
-            <div key={podkast.id} className="podcast-card">
-              <img
-                src={podkast.thumbnail}
-                alt={podkast.naziv}
-                className="podcast-thumbnail"
-              />
-              <div className="podcast-details">
-                <h3>{podkast.naziv}</h3>
-                <p>{podkast.opis}</p>
+          {podkasti.map((podkast) => (
+            <Link to={`/podkast/${podkast.id}`} className="podcast-link" key={podkast.id}>
+              <div className="podcast-card">
+                <img
+                  src={podkast.logo_putanja}
+                  alt={podkast.naslov}
+                  className="podcast-thumbnail"
+                />
+                <div className="podcast-details">
+                  <h3>{podkast.naslov}</h3>
+                  <p>{podkast.kratak_sadrzaj}</p>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
+
+          <div className="pagination">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            >
+              &laquo; Prethodna
+            </button>
+            <span>Stranica {currentPage} od {totalPages}</span>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            >
+              Sledeća &raquo;
+            </button>
+          </div>
         </main>
       </div>
     </div>

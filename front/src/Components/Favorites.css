@@ -79,3 +79,46 @@
     color: #d1d1e0;
   }
   
+
+
+  /* Paginacija */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  font-family: 'Arial', sans-serif;
+  color: #d1d1e0; /* Svetlo siva za tekst */
+}
+
+/* Dugmadi u paginaciji */
+.pagination button {
+  background-color: #29293d; /* Tamna pozadina */
+  color: #d1d1e0; /* Svetla boja za tekst */
+  border: 2px solid #29293d;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Dugme koje je aktivno (ako je izabrano) */
+.pagination button:disabled {
+  background-color: #555555; /* Siva boja za neaktivna dugmad */
+  cursor: not-allowed;
+  border-color: #555555;
+}
+
+/* Hover efekat za dugmadi */
+.pagination button:hover:not(:disabled) {
+  background-color: #ff5722; /* Akcentna narandžasta boja */
+  border-color: #ff5722;
+  color: white; /* Belo slovo na hover */
+}
+
+/* Tekst u paginaciji */
+.pagination span {
+  font-size: 1.1rem;
+  color: #d1d1e0; /* Svetlo siva boja za tekst */
+}

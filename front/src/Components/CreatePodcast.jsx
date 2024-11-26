@@ -1,19 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {useNavigate  } from 'react-router-dom';
+import axios from 'axios';
 import Navigation from './Navigation';
 import './CreatePodcast.css';
 
 const CreatePodcast = () => {
   const [formData, setFormData] = useState({
-    naziv: '',
-    opis: '',
-    kategorija: '',
-    thumbnail: null,
-    partneri: [],
+    naslov: '', 
+    kratak_sadrzaj: '', 
+    kategorija_id: '', 
+    logo_putanja: null, 
+    kreatori: [],
   });
+  const [kategorije, setKategorije] = useState([]);
+  const [korisnici, setKorisnici] = useState([]);
 
-  // Hardkodirane kategorije i kreatori za demo
-  const kategorije = ['Tehnologija', 'Zdravlje', 'Putovanja', 'Sport', 'Muzika'];
-  const kreatori = ['Marko', 'Jovana', 'Nemanja', 'Ana'];
+  const navigate = useNavigate();
+  useEffect(() => {
+    // Učitavanje kategorija
+    axios
+      .get('http://localhost:8000/api/kategorije', {
+        headers: {
+          Authorization: 'Bearer ' + window.sessionStorage.getItem('auth_token'),
+        },
+      })
+      .then((response) => {
+        setKategorije(response.data.data);
+      })
+      .catch((error) => {
+        console.error('Greška pri učitavanju kategorija:', error);
+      });
+
+    // Učitavanje korisnika
+    axios
+    .get('http://localhost:8000/api/users', {
+      headers: {
+        Authorization: 'Bearer ' + window.sessionStorage.getItem('auth_token'),
+      },
+    })
+    .then((response) => {
+      const korisnici = response.data.data;
+      setKorisnici(korisnici);
+
+      // Automatsko pronalaženje ulogovanog korisnika
+      const loggedInUserId = sessionStorage.getItem('user_id');
+      if (loggedInUserId) {
+        const loggedInUser = korisnici.find((user) => user.id.toString() === loggedInUserId);
+        if (loggedInUser) {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            kreatori: [{ id: loggedInUser.id, korisnicko_ime: loggedInUser.korisnicko_ime }],
+          }));
+        }
+      }
+    })
+    .catch((error) => {
+      console.error('Greška pri učitavanju korisnika:', error);
+    });
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -21,83 +65,142 @@ const CreatePodcast = () => {
   };
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, thumbnail: e.target.files[0] });
+    setFormData({ ...formData, logo_putanja: e.target.files[0] });
   };
 
-  const handlePartnerChange = (e) => {
-    const { options } = e.target;
-    const selectedPartners = Array.from(options)
-      .filter((option) => option.selected)
-      .map((option) => option.value);
-    setFormData({ ...formData, partneri: selectedPartners });
+  const handleDodajKreatora = (korisnik) => {
+    if (!formData.kreatori.some((k) => k.id === korisnik.id)) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        kreatori: [...prevFormData.kreatori, korisnik],
+      }));
+    }
+  };
+
+  const handleUkloniKreatora = (id) => {
+    const loggedInUserId = sessionStorage.getItem('user_id');  // Učitaj ID ulogovanog korisnika
+  if (id == loggedInUserId) {
+    // Ako je ID korisnika koji se pokušava ukloniti isti kao ID ulogovanog korisnika, ne dozvoljavaj brisanje
+    alert('Ne možete ukloniti sebe kao kreatora.');
+    return;  // Prekida dalje izvršavanje funkcije
+  }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      kreatori: prevFormData.kreatori.filter((k) => k.id !== id),
+    }));
   };
 
   const handleSave = () => {
-    console.log('Podaci o podkastu:', formData);
-    alert('Podkast uspešno sačuvan!');
-    // Ovde možeš pozvati API za čuvanje podkasta
+    const dataToSend = new FormData();
+    dataToSend.append('naslov', formData.naslov);
+    dataToSend.append('kratak_sadrzaj', formData.kratak_sadrzaj);
+    dataToSend.append('kategorija_id', formData.kategorija_id);
+    dataToSend.append('logo_putanja', formData.logo_putanja);
+
+    formData.kreatori.forEach((kreator, index) => {
+      dataToSend.append(`kreatori[${index}][id]`, kreator.id);
+    });
+
+    axios
+      .post('http://localhost:8000/api/podcasti', dataToSend, {
+        headers: {
+          Authorization: 'Bearer ' + window.sessionStorage.getItem('auth_token'),
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        alert('Podkast uspešno sačuvan!');
+        navigate('/my-podcasts');
+        console.log('Response:', response.data);
+      })
+      .catch((error) => {
+        console.error('Greška pri čuvanju podkasta:', error);
+      });
   };
 
   return (
     <div className="create-podcast-page">
       {/* Navigacija */}
-      <Navigation role="creator" />
+      <Navigation role="autor" />
 
       {/* Glavni sadržaj */}
       <div className="create-podcast-container">
         <h2>Kreiraj Podkast</h2>
         <form className="create-podcast-form" onSubmit={(e) => e.preventDefault()}>
           <label>
-            Naziv podkasta:
+            Naslov podkasta:
             <input
               type="text"
-              name="naziv"
-              value={formData.naziv}
+              name="naslov"
+              value={formData.naslov}
               onChange={handleInputChange}
-              placeholder="Unesite naziv"
+              placeholder="Unesite naslov"
               required
             />
           </label>
           <label>
-            Opis:
+            Kratak sadržaj:
             <textarea
-              name="opis"
-              value={formData.opis}
+              name="kratak_sadrzaj"
+              value={formData.kratak_sadrzaj}
               onChange={handleInputChange}
-              placeholder="Unesite opis"
+              placeholder="Unesite kratak sadržaj"
               required
             />
           </label>
           <label>
             Kategorija:
             <select
-              name="kategorija"
-              value={formData.kategorija}
+              name="kategorija_id"
+              value={formData.kategorija_id}
               onChange={handleInputChange}
               required
             >
               <option value="">Izaberite kategoriju</option>
-              {kategorije.map((kategorija, index) => (
-                <option key={index} value={kategorija}>
-                  {kategorija}
+              {kategorije.map((kategorija) => (
+                <option key={kategorija.id} value={kategorija.id}>
+                  {kategorija.naziv}
                 </option>
               ))}
             </select>
           </label>
           <label>
-            Thumbnail:
+            Logo putanja:
             <input type="file" accept="image/*" onChange={handleFileChange} />
           </label>
+
+          {/* Lista svih korisnika */}
           <label>
-            Partneri:
-            <select multiple onChange={handlePartnerChange}>
-              {kreatori.map((kreator, index) => (
-                <option key={index} value={kreator}>
-                  {kreator}
-                </option>
+            Dodaj kreatore:
+            <div className="korisnici-lista">
+              {korisnici.map((korisnik) => (
+                <button
+                  type="button"
+                  key={korisnik.id}
+                  onClick={() => handleDodajKreatora(korisnik)}
+                  className="korisnik-dugme"
+                >
+                  {korisnik.korisnicko_ime}
+                </button>
               ))}
-            </select>
+            </div>
           </label>
+
+          {/* Lista odabranih kreatora */}
+          <div className="odabrani-kreatori">
+            <h4>Odabrani kreatori:</h4>
+            <ul>
+              {formData.kreatori.map((kreator) => (
+                <li key={kreator.id}>
+                  {kreator.korisnicko_ime}
+                  <button type="button" onClick={() => handleUkloniKreatora(kreator.id)}>
+                    Ukloni
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           <button type="button" className="save-button" onClick={handleSave}>
             Sačuvaj
           </button>

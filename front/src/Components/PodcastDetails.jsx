@@ -1,102 +1,169 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navigation from './Navigation';
+import axios from 'axios';
 import "./PodcastDetails.css";
+
 
 const PodcastDetails = () => {
   const { podcastId } = useParams();
   const navigate = useNavigate();
+  const [role,setRole] = useState(window.sessionStorage.getItem('role') || null);
+  const [podcast, setPodcast] = useState(null);
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null);
+const [userId,setUserId]=useState(window.sessionStorage.getItem('user_id')|| null);
 
-  // Simulacija podataka za podkast i njegove epizode
-  const podcast = {
-    id: podcastId,
-    name: "Tech Talks",
-    description: "A podcast about the latest trends in technology.",
-    thumbnail: "https://via.placeholder.com/800x400",
-    creatorId: 1,  // ID kreatora koji je napravio ovaj podkast
-    episodes: [
-      { id: 1, title: "Introduction to AI", duration: "25:30" },
-      { id: 2, title: "Cloud Computing Basics", duration: "30:15" },
-      { id: 3, title: "Future of Quantum Computing", duration: "20:45" },
-    ],
+ 
+
+
+  useEffect(() => {
+    const fetchPodcast = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/podcasti/${podcastId}`, {
+          headers: {
+            'Authorization': "Bearer " + window.sessionStorage.getItem('auth_token'),
+        },});
+
+        setPodcast(response.data.data); 
+      } catch (err) {
+        setError(err.message); 
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchPodcast();
+  }, [podcastId]); 
+
+
+  const handleDeletePodcast = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:8000/api/podcasti/${podcast.id}`, {
+        headers: {
+          'Authorization': "Bearer " + window.sessionStorage.getItem('auth_token'),
+      },});
+      alert(`Podkast "${podcast.naslov}" je obrisan.`);
+      navigate("/podkasti"); 
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
-  // Simulacija trenutno ulogovanog korisnika (može biti kreator ili admin)
-  const currentUser = {
-    id: 1, // ID trenutno ulogovanog korisnika
-    role: "creator", // Može biti "creator" ili "admin"
-  };
-
-  // Funkcija za brisanje podkasta (simulacija)
-  const handleDeletePodcast = () => {
-    // Ovdje možeš dodati logiku za brisanje podkasta iz baze podataka
-    alert(`Podkast "${podcast.name}" je obrisan.`);
-    navigate("/"); // Preusmeravamo na početnu stranicu
-  };
-
-  // Funkcija za navigaciju na stranicu za dodavanje nove epizode
+ 
   const handleAddEpisode = () => {
-    navigate(`/podkast/${podcast.id}/add-episode`); // Preusmeravamo na stranicu za dodavanje epizode
+    navigate(`/podkast/${podcast.id}/add-episode`);
   };
 
-  // Funkcija za navigaciju na stranicu za izmenu podkasta
+ 
   const handleEditPodcast = () => {
-    navigate(`/podkast/${podcast.id}/edit`); // Preusmeravamo na stranicu za izmenu podkasta
+    navigate(`/podkast/${podcast.id}/edit`);
   };
 
-  // Funkcija za navigaciju na stranicu detalja epizode
+
   const handleEpisodeClick = (episodeId) => {
-    navigate(`/podkast/${podcast.id}/episode/${episodeId}`); // Preusmeravamo na stranicu detalja epizode
+    navigate(`/podkast/${podcast.id}/episode/${episodeId}`);
   };
+
+
+  
+  const handleFavoriteClick = async (id, isFavorite,event) => {
+    try {
+      event.stopPropagation();
+      const config = {
+        method: isFavorite ? 'delete' : 'post',
+        url: `http://localhost:8000/api/users/favorites/${id}`,
+        headers: { 
+          'Authorization': "Bearer " + window.sessionStorage.getItem('auth_token')
+        },
+      };
+      await axios.request(config);
+      setPodcast((prevPodcast) => ({
+        ...prevPodcast,
+        omiljeni: !prevPodcast.omiljeni,
+      }));
+     
+    } catch (error) {
+      console.error("There was an error updating the favorite status!", error);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString); // Pretvori string u Date objekat
+    const options = {
+      weekday: 'long', // Ime dana u nedelji
+      year: 'numeric', // Godina
+      month: '2-digit', // Mesec u formatu MM
+      day: '2-digit', // Dan u formatu DD
+     
+    };
+    return new Intl.DateTimeFormat('sr-RS', options).format(date); // Formatiraj datum na srpskom
+  };
+
+  if (loading) {
+    return <div>Učitavanje...</div>;
+  }
+
+
+  if (error) {
+    return <div>Greška: {error}</div>;
+  }
 
   return (
     <div>
-      <Navigation role={currentUser.role} />
+      <Navigation role={role} />
       <div className="podcast-details-page">
-        
         <div className="podcast-details-header">
           <img
-            src={podcast.thumbnail}
-            alt={podcast.name}
+            src={podcast.logo_putanja}
+            alt={podcast.naslov}
             className="podcast-details-thumbnail"
           />
+          <span 
+              className={`favorite-star ${podcast.omiljeni ? 'favorite' : ''}`} 
+              onClick={(event) => handleFavoriteClick(podcast.id, podcast.omiljeni, event)}
+            >
+              &#9733;
+            </span>
           <div className="podcast-details-info">
-            <h1 className="podcast-details-title">{podcast.name}</h1>
-            <p className="podcast-details-description">{podcast.description}</p>
+            <h1 className="podcast-details-title">{podcast.naslov}</h1>
+            <p className="podcast-details-description">{podcast.kratak_sadrzaj}</p>
           </div>
         </div>
 
         <div className="podcast-episodes">
-          <h2>Episodes</h2>
+          <h2>Epizode</h2>
           <ul className="episode-list">
-            {podcast.episodes.map((episode) => (
+            {podcast.emisije.map((episode,number) => (
               <li
                 key={episode.id}
                 className="episode-item"
-                onClick={() => handleEpisodeClick(episode.id)} // Dodaj onClick za preusmeravanje
+                onClick={() => handleEpisodeClick(episode.id)}
               >
-                <span className="episode-number">Ep {episode.id}:</span>
-                <span className="episode-title">{episode.title}</span>
-                <span className="episode-duration">{episode.duration}</span>
+                <span className="episode-number">Ep {podcast.emisije.length-number}:</span>
+                <span className="episode-title">{episode.naslov}</span>
+                <span className="episode-duration">{formatDate(episode.datum)}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Prikazivanje dugmadi za kreatora ili admina */}
-        {(currentUser.id === podcast.creatorId || currentUser.role === "admin") && (
-          <div className="podcast-actions">
-            {currentUser.role === "creator" || currentUser.role === "admin" ? (
-              <>
-                <button onClick={handleAddEpisode} className="btn add-episode">Dodaj Epizodu</button>
-                <button onClick={handleEditPodcast} className="btn edit-podcast">Izmeni Podkast</button>
-              </>
-            ) : null}
-            {(currentUser.id === podcast.creatorId || currentUser.role === "admin") && (
+
+        <div className="podcast-actions">
+          {role === "administrator" || (role === "autor" && podcast.autori.some(author => author.id === parseInt(userId))) ? (
+            <>
+              
               <button onClick={handleDeletePodcast} className="btn delete-podcast">Obriši Podkast</button>
-            )}
-          </div>
-        )}
+              <button onClick={handleEditPodcast} className="btn edit-podcast">Izmeni Podkast</button>
+            </>
+          ) : null}
+
+          {(role === "autor" && podcast.autori.some(author => author.id === parseInt(userId))) && (
+            <button onClick={handleAddEpisode} className="btn add-episode">Dodaj Epizodu</button>
+          )}
+        </div>
+
+        
         
       </div>
     </div>

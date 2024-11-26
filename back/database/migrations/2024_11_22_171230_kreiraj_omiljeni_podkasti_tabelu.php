@@ -11,23 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('omiljeni_podkasti', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->enum('role', ['administrator', 'autor', 'gledalac']); 
-            $table->rememberToken();
+            $table->foreignId('user_id')->constrained("users")->onDelete('cascade'); 
+            $table->foreignId('podcast_id')->constrained("podkasti")->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['user_id', 'podcast_id']);
         });
     }
-    
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('omiljeni_podkasti');
     }
 };

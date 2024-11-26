@@ -18,9 +18,10 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -41,4 +42,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    
+    public function listaOmiljenihPodkasta()
+    {
+        return $this->belongsToMany(Podcast::class, 'omiljeni_podkasti');
+    }
+
+
+    public function mojiPodkasti()
+    {
+        return $this->belongsToMany(Podcast::class, 'autor_podcast');
+    }
+
+   
 }

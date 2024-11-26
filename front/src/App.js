@@ -23,7 +23,7 @@ function App() {
           <Route path="/" element={<Login />} />  
           <Route path="/register" element={<Register />} />
           <Route path="/podkasti" element={<Podkast />} />
-          <Route path="/podkast/:id" element={<PodcastDetails />} />
+          <Route path="/podkast/:podcastId" element={<PodcastDetails />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/my-podcasts" element={<MyPodcasts />} />
           <Route path="/create-podcast" element={<CreatePodcast />} />

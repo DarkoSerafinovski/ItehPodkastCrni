@@ -156,3 +156,22 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   }
   
+
+  .podcast-details-header {
+    position: relative; /* Omogućava pozicioniranje unutrašnjih elemenata sa "absolute" */
+  }
+  
+  .favorite-star {
+    position: absolute;
+    top: 10px; 
+    right: 10px; 
+    font-size: 30px;
+    cursor: pointer;
+    color: gray; 
+    transition: color 0.3s ease; 
+  }
+  
+  .favorite-star.favorite {
+    color: #e34b1d; 
+  }
+  

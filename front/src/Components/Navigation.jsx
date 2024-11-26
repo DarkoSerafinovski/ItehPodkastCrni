@@ -7,16 +7,16 @@ const Navigation = ({ role }) => {
 
   // Funkcija za odjavu
   const handleLogout = () => {
-    // Ovdje možete implementirati logiku za odjavu (npr. uklanjanje tokena)
+   
     alert("Uspešno ste se odjavili!");
     window.sessionStorage.clear();
-    navigate("/"); // Preusmeravamo na stranicu za prijavu
+    navigate("/"); 
   };
 
   let navItems;
 
   // Provera uloge i postavljanje navigacionih elemenata
-  if (role === 'admin') {
+  if (role === 'administrator') {
     navItems = (
       <ul className="nav-list">
         <li className="nav-item"><a href="/podkasti" className="nav-link">Podkasti</a></li>
@@ -24,7 +24,7 @@ const Navigation = ({ role }) => {
         <li className="nav-item"><a href="/categories" className="nav-link">Kategorije</a></li>
       </ul>
     );
-  } else if (role === 'creator') {
+  } else if (role === 'autor') {
     navItems = (
       <ul className="nav-list">
         <li className="nav-item"><a href="/podkasti" className="nav-link">Podkasti</a></li>
@@ -33,7 +33,7 @@ const Navigation = ({ role }) => {
         <li className="nav-item"><a href="/rumble" className="nav-link">Rumble</a></li>
       </ul>
     );
-  } else if (role === 'viewer') {
+  } else if (role === 'gledalac') {
     navItems = (
       <ul className="nav-list">
         <li className="nav-item"><a href="/podkasti" className="nav-link">Podkasti</a></li>
