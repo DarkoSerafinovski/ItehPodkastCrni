@@ -30,14 +30,14 @@ const Navigation = ({ role }) => {
         <li className="nav-item"><a href="/podkasti" className="nav-link">Podkasti</a></li>
         <li className="nav-item"><a href="/create-podcast" className="nav-link">Kreiraj Podkast</a></li>
         <li className="nav-item"><a href="/my-podcasts" className="nav-link">Moji Podkasti</a></li>
-        <li className="nav-item"><a href="/rumble" className="nav-link">Rumble</a></li>
+        <li className="nav-item"><a href="/youtube" className="nav-link">Youtube</a></li>
       </ul>
     );
   } else if (role === 'gledalac') {
     navItems = (
       <ul className="nav-list">
         <li className="nav-item"><a href="/podkasti" className="nav-link">Podkasti</a></li>
-        <li className="nav-item"><a href="/rumble" className="nav-link">Rumble</a></li>
+        <li className="nav-item"><a href="/youtube" className="nav-link">Youtube</a></li>
         <li className="nav-item"><a href="/favorites" className="nav-link">Omiljeni Podkasti</a></li>
       </ul>
     );
